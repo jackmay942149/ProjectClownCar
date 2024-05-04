@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
 
     // Add other game manager variables and functions here
     public GameObject car;
+    public GameObject objectiveManager;
 
     private void Awake()
     {

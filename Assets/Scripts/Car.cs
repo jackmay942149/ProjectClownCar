@@ -13,8 +13,12 @@ public class Car : MonoBehaviour
     [SerializeField] private float rotationSpeed;
     private Rigidbody rb;
 
+    [Header("Objective Information")]
+    private ObjectiveManager objectiveManager;
+
     void Start(){
         rb = GetComponent<Rigidbody>();
+        objectiveManager = GameManager.GetInstance().objectiveManager.GetComponent<ObjectiveManager>();
     }
 
     void FixedUpdate()
@@ -54,5 +58,6 @@ public class Car : MonoBehaviour
             Destroy(clown);
         }
         Debug.Log("You dropped of " + clownCounter + " at the " + dropOffName + "for a total of $" + cashCounter);
+        objectiveManager.CheckObjectives(clownCounter, dropOffName, cashCounter);
     }
 }
