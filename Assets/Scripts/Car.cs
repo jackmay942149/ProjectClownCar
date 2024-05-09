@@ -34,6 +34,13 @@ public class Car : MonoBehaviour
         // Rotate the car left/right
         Quaternion turnRotation = Quaternion.Euler(0f, rotation * Time.fixedDeltaTime, 0f);
         rb.MoveRotation(rb.rotation * turnRotation);
+
+        // Enable Objective Text
+        if (Input.GetKeyDown("o"))
+        {
+            objectiveManager.EnableText();
+        }
+        
     }
 
     
@@ -57,7 +64,6 @@ public class Car : MonoBehaviour
             }
             Destroy(clown);
         }
-        Debug.Log("You dropped of " + clownCounter + " at the " + dropOffName + "for a total of $" + cashCounter);
         objectiveManager.CheckObjectives(clownCounter, dropOffName, cashCounter);
     }
 }
