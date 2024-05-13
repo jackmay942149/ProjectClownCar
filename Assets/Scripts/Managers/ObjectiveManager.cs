@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using Unity.VisualScripting;
 
 public class ObjectiveManager : MonoBehaviour
 {
@@ -91,7 +90,7 @@ public class ObjectiveManager : MonoBehaviour
     IEnumerator FadeText()
     {
         // Loop until alpha reaches 0
-        while (alpha > 0f)
+        while (alpha > 0.0f)
         {
             // Reduce alpha over time
             alpha -= Time.deltaTime / objectiveStrikethroughTime;

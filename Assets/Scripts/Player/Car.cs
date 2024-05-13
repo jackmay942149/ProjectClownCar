@@ -12,6 +12,8 @@ public class Car : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private float rotationSpeed;
     private Rigidbody rb;
+    private float translation; // Player input
+    private float rotation; // Player Input
 
     [Header("Objective Information")]
     private ObjectiveManager objectiveManager;
@@ -21,29 +23,28 @@ public class Car : MonoBehaviour
         objectiveManager = GameManager.GetInstance().objectiveManager.GetComponent<ObjectiveManager>();
     }
 
-    void FixedUpdate()
-    {
-        // Get input from arrow keys
-        float translation = Input.GetAxis("Vertical") * speed;
-        float rotation = Input.GetAxis("Horizontal") * rotationSpeed;
+    void Update(){
+        // Enable Objective Text
+        if (Input.GetKeyDown("o"))
+        {
+            objectiveManager.EnableText();
+        }
 
+        // Get input from arrow keys
+        translation = Input.GetAxis("Vertical") * speed;
+        rotation = Input.GetAxis("Horizontal") * rotationSpeed;
+    }
+
+    void FixedUpdate(){
         // Move the car forward/backward
         Vector3 movement = transform.forward * translation * Time.fixedDeltaTime;
         rb.MovePosition(rb.position + movement);
 
         // Rotate the car left/right
         Quaternion turnRotation = Quaternion.Euler(0f, rotation * Time.fixedDeltaTime, 0f);
-        rb.MoveRotation(rb.rotation * turnRotation);
-
-        // Enable Objective Text
-        if (Input.GetKeyDown("o"))
-        {
-            objectiveManager.EnableText();
-        }
-        
+        rb.MoveRotation(rb.rotation * turnRotation);        
     }
 
-    
     public void PickupClown(GameObject clown, int positionInCar)
     {
         clown.transform.position =  new Vector3 (0.0f, 0.0f, 0.0f);
