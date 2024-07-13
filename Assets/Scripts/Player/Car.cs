@@ -9,12 +9,15 @@ public class Car : MonoBehaviour
     public GameObject[] clowns;
 
     [Header("Car Movement Information")]
-    [SerializeField] private float speed;
-    [SerializeField] private float rotationSpeed;
     private Rigidbody rb;
-    private float translation; // Player input
-    private float rotation; // Player Input
+    private float forwardInput; // Player input
+    private float sidewaysInput; // Player Input
 
+    [Header("Updated Car Movement Mechanics")]
+    [SerializeField] private Suspension[] suspensions;
+    [SerializeField] private float accelerationFactor = 1.0f;
+    [SerializeField] private float turningFactor = 30.0f;
+ 
     [Header("Objective Information")]
     private ObjectiveManager objectiveManager;
 
@@ -31,18 +34,29 @@ public class Car : MonoBehaviour
         }
 
         // Get input from arrow keys
-        translation = Input.GetAxis("Vertical") * speed;
-        rotation = Input.GetAxis("Horizontal") * rotationSpeed;
+        forwardInput = Input.GetAxisRaw("Vertical");
+        sidewaysInput = Input.GetAxisRaw("Horizontal");
     }
 
     void FixedUpdate(){
-        // Move the car forward/backward
-        Vector3 movement = transform.forward * translation * Time.fixedDeltaTime;
-        rb.MovePosition(rb.position + movement);
 
-        // Rotate the car left/right
-        Quaternion turnRotation = Quaternion.Euler(0f, rotation * Time.fixedDeltaTime, 0f);
-        rb.MoveRotation(rb.rotation * turnRotation);        
+        float forwardMovement = forwardInput * Time.fixedDeltaTime * accelerationFactor * 10000;
+        float sidewaysMovement = sidewaysInput * Time.fixedDeltaTime * turningFactor;
+
+        foreach (Suspension suspension in suspensions){
+            bool inputForward = true;
+            if (forwardInput == 0.0f) {inputForward = false;}
+            suspension.UpdateCurrentForce(forwardMovement, inputForward);
+        }
+
+        foreach (Suspension suspension in suspensions){
+            Vector3 forceToApply = transform.TransformDirection(suspension.currentForce);
+            if (suspension.steeringWheel){forceToApply = Quaternion.Euler(0, turningFactor * sidewaysInput, 0) * forceToApply;}
+            if (suspension.isTouchingGround){
+                rb.AddForceAtPosition(forceToApply, suspension.transform.position);
+            }
+            
+        }     
     }
 
     public void PickupClown(GameObject clown, int positionInCar)
