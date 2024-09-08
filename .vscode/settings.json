@@ -51,5 +51,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "ProjectClownCar.sln"
+    "dotnet.defaultSolution": "ProjectClownCar.sln",
+    "discord.enabled": true
 }
