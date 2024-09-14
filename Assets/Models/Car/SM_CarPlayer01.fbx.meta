@@ -3,7 +3,47 @@ guid: 9ab45d5212fa0b6459152219288a3e02
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_BlackRubber
+    second: {fileID: 2100000, guid: 7cd5136bf4434f347b705831a53f42d2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_CarBase
+    second: {fileID: 2100000, guid: 7e50c902ea1bc63418e5aea394d9b77c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_Glass
+    second: {fileID: 2100000, guid: 39963c30a1281cc479e4bf8ab6076e22, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_Grey01
+    second: {fileID: 2100000, guid: f424b0bb7958c7749bf79cb712f46061, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_Light01
+    second: {fileID: 2100000, guid: 16cab323d8dbf8948b6ccdcc6a368d6f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_Red01
+    second: {fileID: 2100000, guid: 10a0188677617ae45a9406191d4c1453, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_Silver01
+    second: {fileID: 2100000, guid: 69eb3acc941e6d14993c55c304045cd3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_Yellow
+    second: {fileID: 2100000, guid: 590fb401d61ea5c46bbbb72711d53cd9, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -35,7 +75,7 @@ ModelImporter:
     isReadable: 0
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 100
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
@@ -90,7 +130,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 1
+    globalScale: 100
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
