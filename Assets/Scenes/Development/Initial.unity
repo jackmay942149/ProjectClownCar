@@ -1508,11 +1508,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 29.014
       objectReference: {fileID: 0}
+    - target: {fileID: 4471080163950371888, guid: 87da9fe735ed24c478034e91ac38170b,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 14
+      objectReference: {fileID: 0}
     - target: {fileID: 6154514925848007796, guid: 87da9fe735ed24c478034e91ac38170b,
         type: 3}
       propertyPath: steeringWheel
       value: 
       objectReference: {fileID: 176655421}
+    - target: {fileID: 6154514925848007796, guid: 87da9fe735ed24c478034e91ac38170b,
+        type: 3}
+      propertyPath: maxWheelHeight
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 6154514925848007796, guid: 87da9fe735ed24c478034e91ac38170b,
         type: 3}
       propertyPath: wheels.Array.size

@@ -1,16 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.PlasticSCM.Editor.WebApi;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.XR;
 
 
 [System.Serializable]
-struct Wheel {
+class Wheel {
     public GameObject wheel;
     public bool isSteering;
     public bool isDriving;
+    public bool isGrounded;
 }
 
 public class CarPhysics : MonoBehaviour
@@ -30,9 +32,12 @@ public class CarPhysics : MonoBehaviour
     [Header("Wheel Settings")]
     public float wheelRotationSpeed;
     public float maxWheelTurnAngleDegrees;
+    public float minWheelHeight;
+    public float maxWheelHeight;
 
     [Header("Steering Wheel Settings")]
     public float maxSteeringWheelTurnAngleDegrees;
+
 
     
 
@@ -70,6 +75,10 @@ public class CarPhysics : MonoBehaviour
         */
 
         // Adjust Wheels Movement .. need to calculate height (raycast to ground)
+        foreach (Wheel w in wheels){
+            RaycastHit hit;
+            w.isGrounded = Physics.Raycast(w.wheel.transform.position, Vector3.down, out hit, maxWheelHeight, LayerMask.GetMask("Ground"));
+        }
 
         // Adjust Car Body Rotation .. need to calculate the tilt (average front wheel height vs back heel height), yaw (wheel speed and direction), roll all based of the wheel locations (average left wheel height vs right wheel height)
 
