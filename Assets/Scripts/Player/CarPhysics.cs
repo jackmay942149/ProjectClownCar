@@ -1,7 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Experimental.AI;
+using UnityEngineInternal.XR.WSA;
 
 
 [System.Serializable]
@@ -61,20 +64,20 @@ public class CarPhysics : MonoBehaviour
     void Update(){
         adInput = Input.GetAxis("Horizontal");
         wsInput = -Input.GetAxisRaw("Vertical");
-
-        // Debug.Log(adInput.ToString() + wsInput.ToString());
     }
 
     void FixedUpdate(){
         // Adjust Wheels Rotation ... need to calculate the tilt (moving forward and backward) as well as yaw (steering left and right)
         foreach (Wheel w in wheels){
             if (w.isSteering) {
-                w.wheel.transform.SetLocalPositionAndRotation(w.wheel.transform.localPosition, 
-                    Quaternion.Euler(w.wheel.transform.localRotation.eulerAngles.x + wsInput * wheelRotationSpeed, maxWheelTurnAngleDegrees * adInput, 0));
+                Quaternion targetRot = Quaternion.Euler(w.wheel.transform.localRotation.eulerAngles.x, maxWheelTurnAngleDegrees * adInput, w.wheel.transform.localRotation.eulerAngles.z);
+                w.wheel.transform.localRotation = targetRot;
+                targetRot = Quaternion.Euler(wsInput * wheelRotationSpeed, 0, 0);
+                w.wheel.transform.localRotation *= targetRot;
             }
             else {
-                w.wheel.transform.SetLocalPositionAndRotation(w.wheel.transform.localPosition,
-                    Quaternion.Euler(w.wheel.transform.localRotation.eulerAngles.x + wsInput * wheelRotationSpeed, 0, 0));
+                Quaternion targetRot = Quaternion.Euler(wsInput * wheelRotationSpeed, 0, 0);
+                w.wheel.transform.localRotation *= targetRot;
             }
         }
 
@@ -102,31 +105,32 @@ public class CarPhysics : MonoBehaviour
             
         }
 
-        Vector3 newPos = transform.position;
+
+        // Move Car if driving wheels on the ground
+        Vector3 newPos = Vector3.zero;
         foreach (Wheel w in wheels){
             if (w.isGrounded && w.isDriving){
-                newPos += transform.forward * (wsInput * speed);
+                newPos = transform.forward * (wsInput * speed);
                 break;
             }
         }
-        rb.MovePosition(newPos);
+        rb.AddForce(newPos);
 
-        // Adjust Car Body Rotation .. need to calculate the tilt (average front wheel height vs back heel height), yaw (wheel speed and direction), roll all based of the wheel locations (average left wheel height vs right wheel height)
-        float steeringDirection = 0;
+        // Rotate Car if steering wheels on the ground
+        Quaternion steeringDirection = Quaternion.identity;
         
         foreach (Wheel w in wheels){
             if (w.isGrounded && w.isSteering){
-                
+                Quaternion wheelAngle = Quaternion.Euler(0, adInput * steeringSpeed, 0);
+                steeringDirection = transform.rotation * wheelAngle;
             }
         }
+        rb.MoveRotation(steeringDirection); // or just put in steering direction
 
-        if (Mathf.Abs(steeringDirection - (360 * steeringSpeed)) >= 0.1 && steeringDirection != 0){
-            Debug.Log(steeringDirection - (360 * steeringSpeed));
-            Quaternion deltaRotation = Quaternion.Euler(0, steeringDirection, 0);
-            rb.MoveRotation(rb.rotation * deltaRotation);
-        }
+        // Adjust Car Body Rotation .. need to calculate the tilt (average front wheel height vs back heel height), yaw (wheel speed and direction), roll all based of the wheel locations (average left wheel height vs right wheel height)
         
-
+        
+        /*
         // Calculate the rotation based on the steering input
         float steeringInput = wsInput * steeringSpeed; // Assuming wsInput is -1 for left, +1 for right
 
@@ -135,6 +139,7 @@ public class CarPhysics : MonoBehaviour
 
         // Apply the rotation to the rigidbody
         rb.MoveRotation(rb.rotation * steeringRotation);
+        */
         
         // Adjust Car Position ... adjust forward movement based of wheel speed
     }
