@@ -14,6 +14,7 @@ class Wheel {
     public bool isDriving;
     public bool isGrounded;
     [HideInInspector] public float startingHeight;
+    [HideInInspector] public float suspensionLengthLastFrame = 0.0f;
 }
 
 public class CarPhysics : MonoBehaviour
@@ -44,6 +45,8 @@ public class CarPhysics : MonoBehaviour
     [Header("Car Settings")]
     public float speed;
     public float steeringSpeed;
+    public float suspensionStrength;
+    public float suspensionDamping;
 
 
     
@@ -97,7 +100,7 @@ public class CarPhysics : MonoBehaviour
             w.isGrounded = Physics.Raycast(raycastPos, Vector3.down, out hit, raycastDist, LayerMask.GetMask("Ground"));
 
             if (!w.isGrounded){
-                w.wheel.transform.localPosition = new Vector3(w.wheel.transform.localPosition.x, w.startingHeight - maxWheelHeight, w.wheel.transform.localPosition.z);            
+                w.wheel.transform.localPosition = new Vector3(w.wheel.transform.localPosition.x, w.startingHeight - maxWheelHeight, w.wheel.transform.localPosition.z);       
             } 
             else {
                 w.wheel.transform.localPosition = new Vector3(w.wheel.transform.localPosition.x, w.startingHeight + minWheelHeight - hit.distance + axleHeight, w.wheel.transform.localPosition.z);
@@ -105,8 +108,27 @@ public class CarPhysics : MonoBehaviour
             
         }
 
+        // Apply suspension force
+        foreach(Wheel w in wheels) {
+            Vector3 suspensionForce = Vector3.zero;
+            suspensionForce.y = ((w.wheel.transform.localPosition.y - w.startingHeight)  * suspensionStrength) - (suspensionDamping * Mathf.Abs(w.wheel.transform.localPosition.y - w.suspensionLengthLastFrame));
+            
+            
+            if (suspensionForce.y < 0){
+                Debug.Log("Suspension Force = " + suspensionForce.y);
+                Debug.Log("First Bracket = " + (w.wheel.transform.localPosition.y - w.startingHeight)  * suspensionStrength);
+                Debug.Log("Sceond Bracket = " + (suspensionDamping * Mathf.Abs(w.wheel.transform.localPosition.y - w.suspensionLengthLastFrame)));
+            }
+            Vector3 endLinePos = w.wheel.transform.position + suspensionForce;
 
-        // Move Car if driving wheels on the ground
+            Debug.DrawLine(w.wheel.transform.position, endLinePos, Color.green, Time.fixedDeltaTime);
+
+            w.suspensionLengthLastFrame = w.wheel.transform.localPosition.y;
+            rb.AddForceAtPosition(suspensionForce, w.wheel.transform.position);
+        }
+
+
+        // Move Car if driving wheels on the ground TODO: Adjust force based of wheel location and whether it is touching ground
         Vector3 newPos = Vector3.zero;
         foreach (Wheel w in wheels){
             if (w.isGrounded && w.isDriving){
@@ -116,7 +138,7 @@ public class CarPhysics : MonoBehaviour
         }
         rb.AddForce(newPos);
 
-        // Rotate Car if steering wheels on the ground
+        // Rotate Car if steering wheels on the ground TODO: Adjust steering speed based of cuurent rb velocity and make it a force
         Quaternion steeringDirection = Quaternion.identity;
         
         foreach (Wheel w in wheels){
@@ -127,21 +149,8 @@ public class CarPhysics : MonoBehaviour
         }
         rb.MoveRotation(steeringDirection); // or just put in steering direction
 
-        // Adjust Car Body Rotation .. need to calculate the tilt (average front wheel height vs back heel height), yaw (wheel speed and direction), roll all based of the wheel locations (average left wheel height vs right wheel height)
+        // TODO: Adjust Car Body Rotation .. need to calculate the tilt (average front wheel height vs back heel height), roll all based of the wheel locations (average left wheel height vs right wheel height)
         
-        
-        /*
-        // Calculate the rotation based on the steering input
-        float steeringInput = wsInput * steeringSpeed; // Assuming wsInput is -1 for left, +1 for right
-
-        // Create a quaternion representing the steering rotation
-        Quaternion steeringRotation = Quaternion.Euler(0, steeringInput * Time.deltaTime, 0);
-
-        // Apply the rotation to the rigidbody
-        rb.MoveRotation(rb.rotation * steeringRotation);
-        */
-        
-        // Adjust Car Position ... adjust forward movement based of wheel speed
     }
     
 }

@@ -351,7 +351,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 279547225}
   serializedVersion: 2
-  m_LocalRotation: {x: 7.1931997e-17, y: 0.973249, z: -0.22975291, w: 9.503858e-17}
+  m_LocalRotation: {x: -0.000000006847172, y: 0.973249, z: -0.22975294, w: -0.000000029005085}
   m_LocalPosition: {x: 0, y: 33.5, z: 21.24}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1475,7 +1475,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1030046727}
   serializedVersion: 2
-  m_LocalRotation: {x: 7.1931997e-17, y: 0.973249, z: -0.22975291, w: 9.503858e-17}
+  m_LocalRotation: {x: -0.000000006847172, y: 0.973249, z: -0.22975294, w: -0.000000029005085}
   m_LocalPosition: {x: 0, y: 33.5, z: 21.24}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1979,6 +1979,12 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1386312084}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1393000505 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8782273814693879234, guid: c168de0768d2a9c4fab9428519996814,
+    type: 3}
+  m_PrefabInstance: {fileID: 1919992774}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1406108972
 GameObject:
   m_ObjectHideFlags: 0
@@ -2702,6 +2708,31 @@ PrefabInstance:
       propertyPath: steeringSpeed
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6154514925848007796, guid: c168de0768d2a9c4fab9428519996814,
+        type: 3}
+      propertyPath: suspensionBase
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6154514925848007796, guid: c168de0768d2a9c4fab9428519996814,
+        type: 3}
+      propertyPath: suspensionDamping
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6154514925848007796, guid: c168de0768d2a9c4fab9428519996814,
+        type: 3}
+      propertyPath: wheels.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6154514925848007796, guid: c168de0768d2a9c4fab9428519996814,
+        type: 3}
+      propertyPath: suspensionStrength
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6154514925848007796, guid: c168de0768d2a9c4fab9428519996814,
+        type: 3}
+      propertyPath: wheels.Array.data[3].wheel
+      value: 
+      objectReference: {fileID: 1393000505}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
