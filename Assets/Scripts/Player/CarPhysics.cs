@@ -111,7 +111,7 @@ public class CarPhysics : MonoBehaviour
         // Apply suspension force
         foreach(Wheel w in wheels) {
             Vector3 suspensionForce = Vector3.zero;
-            suspensionForce.y = ((w.wheel.transform.localPosition.y - w.startingHeight)  * suspensionStrength) - (suspensionDamping * Mathf.Abs(w.wheel.transform.localPosition.y - w.suspensionLengthLastFrame));
+            suspensionForce.y = ((w.wheel.transform.localPosition.y - w.startingHeight)  * suspensionStrength) - (suspensionDamping * (- w.wheel.transform.localPosition.y + w.suspensionLengthLastFrame));
             
             
             if (suspensionForce.y < 0){

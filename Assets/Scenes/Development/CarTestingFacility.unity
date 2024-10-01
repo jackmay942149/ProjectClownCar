@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028334, g: 0.22571328, b: 0.3069217, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2643,6 +2643,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 555834013286806517, guid: c168de0768d2a9c4fab9428519996814,
+        type: 3}
+      propertyPath: m_Center.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2668027019920753250, guid: c168de0768d2a9c4fab9428519996814,
         type: 3}
       propertyPath: m_Name
@@ -2716,7 +2721,7 @@ PrefabInstance:
     - target: {fileID: 6154514925848007796, guid: c168de0768d2a9c4fab9428519996814,
         type: 3}
       propertyPath: suspensionDamping
-      value: 10
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6154514925848007796, guid: c168de0768d2a9c4fab9428519996814,
         type: 3}
