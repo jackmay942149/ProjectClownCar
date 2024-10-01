@@ -47,6 +47,7 @@ public class CarPhysics : MonoBehaviour
     public float steeringSpeed;
     public float suspensionStrength;
     public float suspensionDamping;
+    public float stationaryTurnSpeed;
 
 
     
@@ -84,12 +85,12 @@ public class CarPhysics : MonoBehaviour
             }
         }
 
-        /* Adjust Steering Wheel Rotation
+        // Adjust Steering Wheel Rotation
         if (steeringWheel) {
-            steeringWheel.transform.SetLocalPositionAndRotation(steeringWheel.transform.position,
-                Quaternion.Euler(0, steeringWheel.transform.localRotation.eulerAngles.y + adInput * maxSteeringWheelTurnAngleDegrees, 0));
+            steeringWheel.transform.SetLocalPositionAndRotation(steeringWheel.transform.localPosition,
+                Quaternion.Euler(0, 0, adInput * maxSteeringWheelTurnAngleDegrees));
         }
-        */
+        
 
         // Adjust Wheels Movement .. need to calculate height (raycast to ground)
         foreach (Wheel w in wheels){
@@ -113,12 +114,6 @@ public class CarPhysics : MonoBehaviour
             Vector3 suspensionForce = Vector3.zero;
             suspensionForce.y = ((w.wheel.transform.localPosition.y - w.startingHeight)  * suspensionStrength) - (suspensionDamping * (- w.wheel.transform.localPosition.y + w.suspensionLengthLastFrame));
             
-            
-            if (suspensionForce.y < 0){
-                Debug.Log("Suspension Force = " + suspensionForce.y);
-                Debug.Log("First Bracket = " + (w.wheel.transform.localPosition.y - w.startingHeight)  * suspensionStrength);
-                Debug.Log("Sceond Bracket = " + (suspensionDamping * Mathf.Abs(w.wheel.transform.localPosition.y - w.suspensionLengthLastFrame)));
-            }
             Vector3 endLinePos = w.wheel.transform.position + suspensionForce;
 
             Debug.DrawLine(w.wheel.transform.position, endLinePos, Color.green, Time.fixedDeltaTime);
@@ -128,15 +123,26 @@ public class CarPhysics : MonoBehaviour
         }
 
 
-        // Move Car if driving wheels on the ground TODO: Adjust force based of wheel location and whether it is touching ground
+        // Move Car if driving wheels on the ground 
         Vector3 newPos = Vector3.zero;
         foreach (Wheel w in wheels){
             if (w.isGrounded && w.isDriving){
-                newPos = transform.forward * (wsInput * speed);
-                break;
+                Vector3 accelForce = transform.forward * (wsInput * speed);
+
+
+                if (w.isSteering){
+                    if (wsInput == 0 && Mathf.Abs(adInput) == 1){accelForce = transform.forward * (-stationaryTurnSpeed * speed);}
+
+                    Quaternion rot = Quaternion.AngleAxis(adInput * steeringSpeed, transform.up);
+                    accelForce = rot * accelForce;
+                }
+                
+                rb.AddForceAtPosition(accelForce, w.wheel.transform.position);
+                Debug.DrawLine(w.wheel.transform.position, w.wheel.transform.position + accelForce, Color.blue, Time.fixedDeltaTime);
             }
         }
-        rb.AddForce(newPos);
+
+        /*
 
         // Rotate Car if steering wheels on the ground TODO: Adjust steering speed based of cuurent rb velocity and make it a force
         Quaternion steeringDirection = Quaternion.identity;
@@ -150,7 +156,9 @@ public class CarPhysics : MonoBehaviour
         rb.MoveRotation(steeringDirection); // or just put in steering direction
 
         // TODO: Adjust Car Body Rotation .. need to calculate the tilt (average front wheel height vs back heel height), roll all based of the wheel locations (average left wheel height vs right wheel height)
-        
+        */
+
+        // Add drag
     }
     
 }
