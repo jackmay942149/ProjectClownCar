@@ -4,6 +4,7 @@ using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Experimental.AI;
+using UnityEngine.Rendering;
 using UnityEngineInternal.XR.WSA;
 
 
@@ -12,9 +13,18 @@ class Wheel {
     public GameObject wheel;
     public bool isSteering;
     public bool isDriving;
-    public bool isGrounded;
+    public bool isGrounded = true;
     [HideInInspector] public float startingHeight;
     [HideInInspector] public float suspensionLengthLastFrame = 0.0f;
+
+    [Header("Coyote Time Settings")]
+    [HideInInspector] public bool inCoyoteTime = false;
+}
+
+[System.Serializable]
+class Axle {
+    public GameObject axle;
+    public List<GameObject> wheels;
 }
 
 public class CarPhysics : MonoBehaviour
@@ -23,6 +33,7 @@ public class CarPhysics : MonoBehaviour
     [Header("Object References")]
     [SerializeField] private List<Wheel> wheels;
     [SerializeField] private GameObject steeringWheel;
+    [SerializeField] private List<Axle> axles;
 
     // Component References
     private Rigidbody rb;
@@ -48,6 +59,9 @@ public class CarPhysics : MonoBehaviour
     public float suspensionStrength;
     public float suspensionDamping;
     public float stationaryTurnSpeed;
+    public float airTurnSpeedFactor;
+
+    
 
 
     
@@ -98,7 +112,13 @@ public class CarPhysics : MonoBehaviour
             RaycastHit hit;
             float raycastDist = maxWheelHeight + minWheelHeight + axleHeight;
             Vector3 raycastPos = new Vector3(w.wheel.transform.position.x, w.wheel.transform.position.y + w.startingHeight + minWheelHeight - w.wheel.transform.localPosition.y, w.wheel.transform.position.z);
-            w.isGrounded = Physics.Raycast(raycastPos, Vector3.down, out hit, raycastDist, LayerMask.GetMask("Ground"));
+            
+            if (w.isGrounded && !Physics.Raycast(raycastPos, Vector3.down, out hit, raycastDist, LayerMask.GetMask("Ground"))){
+                w.isGrounded = false;
+                w.inCoyoteTime = true;
+            } else {
+                w.isGrounded = Physics.Raycast(raycastPos, Vector3.down, out hit, raycastDist, LayerMask.GetMask("Ground")); 
+            }
 
             if (!w.isGrounded){
                 w.wheel.transform.localPosition = new Vector3(w.wheel.transform.localPosition.x, w.startingHeight - maxWheelHeight, w.wheel.transform.localPosition.z);       
@@ -111,6 +131,11 @@ public class CarPhysics : MonoBehaviour
 
         // Apply suspension force
         foreach(Wheel w in wheels) {
+
+            if (!w.isGrounded){
+                break;
+            }
+
             Vector3 suspensionForce = Vector3.zero;
             suspensionForce.y = ((w.wheel.transform.localPosition.y - w.startingHeight)  * suspensionStrength) - (suspensionDamping * (- w.wheel.transform.localPosition.y + w.suspensionLengthLastFrame));
             
@@ -142,23 +167,39 @@ public class CarPhysics : MonoBehaviour
             }
         }
 
-        /*
-
-        // Rotate Car if steering wheels on the ground TODO: Adjust steering speed based of cuurent rb velocity and make it a force
-        Quaternion steeringDirection = Quaternion.identity;
-        
+        // Apply Coyote Time
         foreach (Wheel w in wheels){
-            if (w.isGrounded && w.isSteering){
-                Quaternion wheelAngle = Quaternion.Euler(0, adInput * steeringSpeed, 0);
-                steeringDirection = transform.rotation * wheelAngle;
+            if (w.inCoyoteTime){
+
+                if (w.isGrounded){
+                    w.inCoyoteTime = false;
+                } else if (w.isDriving) {
+                    Vector3 accelForce = transform.forward * (wsInput * speed);
+
+                    if (w.isSteering){
+                        Quaternion rot = Quaternion.AngleAxis(adInput * steeringSpeed * airTurnSpeedFactor, transform.up);
+                        accelForce = rot * accelForce;
+                    }
+                
+                    rb.AddForceAtPosition(accelForce, w.wheel.transform.position);
+                    Debug.DrawLine(w.wheel.transform.position, w.wheel.transform.position + accelForce, Color.blue, Time.fixedDeltaTime);
+                }
             }
         }
-        rb.MoveRotation(steeringDirection); // or just put in steering direction
 
-        // TODO: Adjust Car Body Rotation .. need to calculate the tilt (average front wheel height vs back heel height), roll all based of the wheel locations (average left wheel height vs right wheel height)
-        */
+        foreach(Axle a in axles){
+            float height = (a.wheels[0].transform.localPosition.y + a.wheels[0].transform.localPosition.y)/2;
+            float width = Mathf.Abs(a.wheels[0].transform.localPosition.x - a.wheels[0].transform.localPosition.x);
+            float angle = Mathf.Asin((height - a.wheels[0].transform.localPosition.y)/(width/2));
+            
+            if (height - a.wheels[0].transform.localPosition.y == 0){
+                angle = 0.0f;
+            }
 
-        // Add drag
+            a.axle.transform.localPosition = new Vector3(a.axle.transform.localPosition.x, height, a.axle.transform.localPosition.z);
+            a.axle.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, angle);
+        }
+        
     }
     
 }
