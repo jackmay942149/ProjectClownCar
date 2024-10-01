@@ -2703,6 +2703,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4471080163950371888, guid: c168de0768d2a9c4fab9428519996814,
+        type: 3}
+      propertyPath: m_ImplicitCom
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6154514925848007796, guid: c168de0768d2a9c4fab9428519996814,
         type: 3}
       propertyPath: speed
@@ -2721,7 +2726,7 @@ PrefabInstance:
     - target: {fileID: 6154514925848007796, guid: c168de0768d2a9c4fab9428519996814,
         type: 3}
       propertyPath: suspensionDamping
-      value: 4
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6154514925848007796, guid: c168de0768d2a9c4fab9428519996814,
         type: 3}
