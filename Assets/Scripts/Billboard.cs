@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CarBillBoard : MonoBehaviour
+public class Billboard : MonoBehaviour
 {
     public Material billboardMat;
     void Start(){
