@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Car : MonoBehaviour
 {
+    
     [Header("PickUp Information")]
     public GameObject[] clownPositions;
     public GameObject[] clowns;
@@ -14,7 +15,7 @@ public class Car : MonoBehaviour
     private float sidewaysInput; // Player Input
 
     [Header("Updated Car Movement Mechanics")]
-    [SerializeField] private Suspension[] suspensions;
+    //[SerializeField] private Suspension[] suspensions;
     [SerializeField] private float accelerationFactor = 1.0f;
     [SerializeField] private float turningFactor = 30.0f;
  
@@ -43,6 +44,8 @@ public class Car : MonoBehaviour
         float forwardMovement = forwardInput * Time.fixedDeltaTime * accelerationFactor * 10000;
         float sidewaysMovement = sidewaysInput * Time.fixedDeltaTime * turningFactor;
 
+        /*
+
         foreach (Suspension suspension in suspensions){
             bool inputForward = true;
             if (forwardInput == 0.0f) {inputForward = false;}
@@ -56,9 +59,10 @@ public class Car : MonoBehaviour
                 rb.AddForceAtPosition(forceToApply, suspension.transform.position);
             }
             
-        }     
+        } 
+        */    
     }
-
+    
     public void PickupClown(GameObject clown, int positionInCar)
     {
         clown.transform.position =  new Vector3 (0.0f, 0.0f, 0.0f);
@@ -81,4 +85,5 @@ public class Car : MonoBehaviour
         }
         objectiveManager.CheckObjectives(clownCounter, dropOffName, cashCounter);
     }
+    
 }
